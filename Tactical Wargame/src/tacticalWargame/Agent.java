@@ -14,13 +14,14 @@ public class Agent {
 	private int speed;
 	private int hp;
 	private int view_range;
+	private int movement_range;
+	private int movement_points ;
 	private Position position;
 	private boolean dodge_flag ;
 	private boolean block_flag ;
 	private boolean restore_flag;
 	private boolean has_attacked;
 	private boolean alive;
-	private int has_moves ;
 	private boolean ai ;
 	
 	//*********************************************************************************
@@ -48,6 +49,60 @@ public class Agent {
 		return true;
 		}
 		return false;
+	}
+	
+	void MoveAction() throws IOException{
+		
+		char direction_choice = GetActionInput() ;
+		int newx = this.position.GetX();
+		int newy = this.position.GetY();
+		boolean moved = false;
+		
+		while (!moved){		
+		System.out.println("Please choose your movement direction. Enter :");
+		System.out.println("W to go north (up)");
+		System.out.println("S to go south (down)");
+		System.out.println("A to go west (left)");
+		System.out.println("D to go east (right)");
+		System.out.println("Q to cancel movement");
+		Position new_position = new Position(newx,newy);
+			switch (direction_choice){
+			case 'q' :
+			case 'Q' : break;
+			case 'w' :
+			case 'W' :  new_position.SetPosition(newx-1, newy);
+						moved = Move(new_position);					
+						break;
+			case 's' :
+			case 'S' :  new_position.SetPosition(newx+1,newy);
+						moved = Move(new_position);					
+						break;
+			case 'a' :
+			case 'A' :  new_position.SetPosition(newx,newy-1);
+						moved = Move(new_position);					
+						break;
+			case 'd' :
+			case 'D' :  new_position.SetPosition(newx,newy+1);
+						moved = Move(new_position);					
+						break;						
+			default  :  System.out.println("This is not allowed. Please enter : ");
+						System.out.println("W to go north (up)");
+						System.out.println("S to go south (down)");
+						System.out.println("A to go west (left)");
+						System.out.println("D to go east (right)");
+						System.out.println("Q to cancel movement");						
+						direction_choice = this.GetActionInput();
+			}
+		}
+		
+		if (moved) {
+			this.DcrMovement_points();
+		}
+		return;
+
+		
+		
+		
 	}
 	
 	void Dodge(){
@@ -87,7 +142,7 @@ public class Agent {
 	void Turn() throws IOException{
 		// Initialisations for every turn
 		this.SetHas_attacked(false);
-		this.SetHas_moves(this.GetSpeed());
+		this.SetMovement_points(this.GetMovement_range());
 		int i=0;
 		
 		if (!IsAi()){
@@ -127,7 +182,7 @@ public class Agent {
 					break;
 		case 'f' :
 		case 'F' :  this.SetHas_attacked(true);
-					this.SetHas_moves(0);
+					this.SetMovement_points(0);
 					this.Has_more_moves();
 					break;
 		default  :  System.out.println("This is not allowed. Please enter : ");
@@ -174,12 +229,12 @@ public class Agent {
 	}
 	
 	
-	void InitialiseHas_moves(){
-		this.has_moves = this.speed;
+	void InitialiseMovement_points(){
+		this.movement_points = this.movement_range;
 	}
 	
-	void DcrHas_moves(){
-		this.has_moves--;
+	void DcrMovement_points(){
+		this.movement_points--;
 	}
 	
 	//*********************************************************************************
@@ -217,7 +272,13 @@ public class Agent {
 	
 	boolean MoveAllowed(Position newposition){
 		// TO DO 
+		if (true)
 		return true;
+		
+		else {
+			System.out.println("This Movement is not allowed.");
+			return false;
+		}
 	}
 	
 	
@@ -254,6 +315,17 @@ public class Agent {
 		return;
 	}
 	
+	void SetMovement_range(int movement_range){
+		this.movement_range = movement_range;
+		return;
+	}
+	
+	void SetMovement_points(int movement_points){
+		this.movement_points = movement_points;
+		return;
+	}
+
+	
 	void SetDodge_flag(boolean flag){
 		this.dodge_flag = flag;
 		return;
@@ -278,10 +350,6 @@ public class Agent {
 		this.has_attacked = flag;
 	}
 	
-	void SetHas_moves(int moves){
-		this.has_moves = moves;
-	}
-
 	void SetAlive(boolean flag){
 		this.alive = flag;
 	}
@@ -312,6 +380,14 @@ public class Agent {
 		return this.view_range;
 	}
 	
+	int GetMovement_range(){
+		return this.movement_range;
+	}
+	
+	int GetMovement_points(){
+		return this.movement_points;
+	}
+
 	boolean GetDodge_flag(){
 		return this.dodge_flag;
 	}
@@ -337,7 +413,7 @@ public class Agent {
 	}
 	
 	boolean Has_more_moves(){
-		if (has_moves == 0 ){
+		if (movement_points == 0 ){
 			return false;
 		}
 		return true;

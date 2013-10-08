@@ -1,0 +1,10 @@
+7 9
+xxxxxxx
+xooxxox
+xooooxx
+xoxxoox
+xooxxox
+xxoxoox
+xxooxox
+xxxooox
+xxxxxxx

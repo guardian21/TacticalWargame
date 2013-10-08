@@ -18,6 +18,8 @@ public class Game {
 	static int number_of_agents ;
 	static int[] team_alive ;
 	static int winner ;
+	static int dx; // length of map
+	static int dy; // height of map
 	
 	static Comparator<Agent> speedcomparator = new speedComparator();
 
@@ -117,11 +119,18 @@ public class Game {
 		char tempchoice;
 		
 		System.out.println("Welcome to tactical fighters, a fun and addicting game");
+		System.out.println("Please enter which map will be used");
+		try {
+			Game.MapRead(Game.input.nextLine());
+		} catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(0);	       
+        }
 		System.out.println("Please enter number of teams");
 		Game.number_of_teams = Integer.parseInt(Game.input.nextLine());
 		System.out.println("Please enter total number of agents (not per team)");
 		Game.number_of_agents = Integer.parseInt(Game.input.nextLine());
-
+		
 		Game.all_agents = new Agent[number_of_agents];
 		Game.team_alive = new int[Game.number_of_teams+1];
 
@@ -206,5 +215,62 @@ public class Game {
 
 			
 		}
+	}
+
+
+	static void MapRead(String mapname) throws FileNotFoundException{
+	
+		// Reads a map from a file. File format:
+		// x y (dimensions, 2 integers)
+		//xxxxxxxxx
+		//xooooxoox
+		//xooxoooxx
+		//xooooxxox
+		//xxoooooox
+		//xxxxxxxxx
+		//
+				
+		File f1 = new File(mapname);
+				
+		Scanner sc = new Scanner(f1);    // Read the input file first lines (size, and starting positions)
+
+		dx = sc.nextInt();
+		
+		dy = sc.nextInt();
+		
+		String tmp = sc.nextLine();
+		String[] mapLines = new String[dy];
+				
+		/* Read the map :
+		 * we assume
+		 * that the map starts from top left and coordinates rise towards right and bottom
+		 * We also use for calculations starting position as 0,0 (so a 10x10 map would have 
+		 * bottom right position: 9,9)
+		 * Also, all our tables are [y][x], so that we understand them easier. (so coordinates 2,3 are in the table index 3,2)
+		 */
+		
+		char[][] map = new char[dy][dx];
+		
+		int i,j;
+		for(i=0; i<dy ;i++){
+			
+			mapLines[i] = sc.nextLine();
+			
+			map[i] = mapLines[i].toCharArray();
+		}
+		sc.close();
+	
+	
+	
+	System.out.println("---------------MAP------------------_");
+	
+	for(i=0;i<dy;i++){
+		for(j=0;j<dx;j++)
+			System.out.print(map[i][j] + "  ");
+		System.out.println();
+	}
+	
+	System.out.println("__________________________________________________________________________");
+
 	}
 }
