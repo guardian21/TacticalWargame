@@ -1,5 +1,7 @@
 package tacticalWargame;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -117,7 +119,7 @@ public class Game {
 		System.out.println("Welcome to tactical fighters, a fun and addicting game");
 		System.out.println("Please enter number of teams");
 		Game.number_of_teams = Integer.parseInt(Game.input.nextLine());
-		System.out.println("Please enter number of agents");
+		System.out.println("Please enter total number of agents (not per team)");
 		Game.number_of_agents = Integer.parseInt(Game.input.nextLine());
 
 		Game.all_agents = new Agent[number_of_agents];
@@ -131,33 +133,63 @@ public class Game {
 		
 		
 		for (i=0; i<Game.number_of_agents; i++){
+			
 			System.out.println("Please enter name of agent number: " + i);
 			name = Game.input.nextLine();
-			
-			System.out.println("Please enter the number of team agent " + name + " is on");
+	// Default Initialisation values		
+			gun = hands;
+			speed = 1;
+			hp = 10;
+			view_range = 3;
+	// Read Correct balues from Text File		
+			File tempfile = new File(name+".txt");
+	        try {
+	            Scanner scanner = new Scanner(tempfile);
+	            
+	                String weaponchoice = scanner.nextLine();
+	    			switch (weaponchoice){
+					case "pistol": gun = pistol;
+										break;
+					case "knive" : gun = knive;
+									break;
+					case "hands" : gun = hands;	
+				}
+
+	            speed= Integer.parseInt(scanner.nextLine());
+	            hp= Integer.parseInt(scanner.nextLine());
+	            view_range= Integer.parseInt(scanner.nextLine());
+		        scanner.close();		
+	            
+	        } catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	            System.exit(0);	        }
+
+        
+	        System.out.println("Please enter the number of team agent " + name + " is on");
 			team = Integer.parseInt(Game.input.nextLine());
 			
-			System.out.println("Please chose the gun of agent " + name );
-			System.out.println("Enter p for pistol, h for hands, k for knive");
-			tempchoice = Game.input.nextLine().charAt(0);
-			switch (tempchoice){
-				case 'p':
-				case 'P':	gun = pistol;
-							break;
-				case 'k':
-				case 'K':	gun = knive;
-							break;
-				default:	gun = hands;	
-			}
-
-			System.out.println("Please enter the speed of agent " + name );
-			speed = Integer.parseInt(Game.input.nextLine());
-			
-			System.out.println("Please enter the hp of agent " + name );
-			hp = Integer.parseInt(Game.input.nextLine());
-			
-			System.out.println("Please enter the view range of agent " + name );
-			view_range = Integer.parseInt(Game.input.nextLine());
+// Older Version allowing creation of agents on start up			
+//			System.out.println("Please chose the gun of agent " + name );
+//			System.out.println("Enter p for pistol, h for hands, k for knive");
+//			tempchoice = Game.input.nextLine().charAt(0);
+//			switch (tempchoice){
+//				case 'p':
+//				case 'P':	gun = pistol;
+//							break;
+//				case 'k':
+//				case 'K':	gun = knive;
+//							break;
+//				default:	gun = hands;	
+//			}
+//
+//			System.out.println("Please enter the speed of agent " + name );
+//			speed = Integer.parseInt(Game.input.nextLine());
+//			
+//			System.out.println("Please enter the hp of agent " + name );
+//			hp = Integer.parseInt(Game.input.nextLine());
+//			
+//			System.out.println("Please enter the view range of agent " + name );
+//			view_range = Integer.parseInt(Game.input.nextLine());
 			
 			System.out.println("Please enter Y if player is player controlled, else N if he is AI controlled");
 			tempchoice = Game.input.nextLine().charAt(0);
